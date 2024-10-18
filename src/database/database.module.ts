@@ -8,11 +8,11 @@ import { Pool } from 'pg';
       provide: 'PG_CONNECTION',
       useFactory: async () => {
         const pool = new Pool({
-          user: process.env.POSTGRES_USER,
-          host: process.env.POSTGRES_HOST,
-          database: process.env.POSTGRES_DB,
-          password: String(process.env.POSTGRES_PASSWORD),
-          port: parseInt(process.env.POSTGRES_PORT, 10),
+          user: process.env.POSTGRESQL_USERNAME,
+          host: process.env.POSTGRESQL_HOST,
+          database: process.env.POSTGRESQL_DATABASE,
+          password: String(process.env.POSTGRESQL_PASSWORD),
+          port: parseInt(process.env.POSTGRESQL_PORT, 10),
         });
         return pool;
       },
