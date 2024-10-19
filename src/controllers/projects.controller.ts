@@ -7,6 +7,7 @@ import {
   Param,
   Body,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { ProjectsService } from '../services/projects.service';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
@@ -20,8 +21,12 @@ export class ProjectsController {
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @SetMetadata('roles', ['owner']) // Only owners can create projects
-  async createProject(@Body() projectData: any) {
-    return await this.projectsService.createProject(projectData);
+  async createProject(@Body() projectData: any, @Request() req: any) {
+    const ownerId = req.user.id; // Extracting user ID from the request
+    return await this.projectsService.createProject({
+      ...projectData,
+      owner_id: ownerId,
+    });
   }
 
   @Get()
@@ -39,14 +44,23 @@ export class ProjectsController {
   @Put(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @SetMetadata('roles', ['owner']) // Only owners can update projects
-  async updateProject(@Param('id') id: string, @Body() updateData: any) {
-    return await this.projectsService.updateProject(id, updateData);
+  async updateProject(
+    @Param('id') id: string,
+    @Body() updateData: any,
+    @Request() req: any,
+  ) {
+    const ownerId = req.user.id; // Extracting user ID from the request
+    return await this.projectsService.updateProject(id, {
+      ...updateData,
+      owner_id: ownerId,
+    });
   }
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @SetMetadata('roles', ['owner']) // Only owners can delete projects
-  async deleteProject(@Param('id') id: string) {
-    return await this.projectsService.deleteProject(id);
+  async deleteProject(@Param('id') id: string, @Request() req: any) {
+    const ownerId = req.user.id; // Extracting user ID from the request
+    return await this.projectsService.deleteProject(id, ownerId);
   }
 }
