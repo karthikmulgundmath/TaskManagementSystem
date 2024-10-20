@@ -57,6 +57,8 @@ GOOGLE_APPLICATION_CREDENTIALS
 NODE_MAILER_EMAIL
 NODE_MAILER_PASSWORD
 
+I have added backup.sql file so that u can setup the database easily just import the backup.sql file
+
 ## Start the application
 
 npm run start
