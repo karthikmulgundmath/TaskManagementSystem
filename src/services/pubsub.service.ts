@@ -1,11 +1,12 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { PubSub } from '@google-cloud/pubsub';
+import { NotificationService } from './notification.service';
 
 @Injectable()
 export class PubSubService implements OnModuleInit {
   private pubSubClient: PubSub;
 
-  constructor() {
+  constructor(private notificationService: NotificationService) {
     console.log(
       'Initializing Pub/Sub client with Project ID:',
       process.env.PROJECT_ID,
@@ -35,7 +36,7 @@ export class PubSubService implements OnModuleInit {
       );
 
       // Add logic to send notification to user, e.g., email, push notification
-      await this.sendNotificationToUser(data);
+      await this.notificationService.sendNotificationToUser(data);
 
       // Acknowledge message
       message.ack();
@@ -45,11 +46,5 @@ export class PubSubService implements OnModuleInit {
     subscription.on('error', (error) => {
       console.error('Error receiving Pub/Sub message:', error);
     });
-  }
-
-  private async sendNotificationToUser(data: any): Promise<void> {
-    console.log(
-      `Sending notification to user ${data.userId} about task ${data.taskTitle}.`,
-    );
   }
 }

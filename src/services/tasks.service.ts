@@ -44,6 +44,7 @@ export class TasksService {
       userId: task.assigned_user_id,
       taskTitle: task.title,
       dueDate: task.due_date,
+      projectId: task.project_id,
     });
     console.log('message', message);
 
