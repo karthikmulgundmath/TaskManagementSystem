@@ -1,4 +1,9 @@
-import { Injectable, Inject, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  ForbiddenException,
+  BadRequestException,
+} from '@nestjs/common';
 import { Pool } from 'pg';
 import { TaskLogService } from './task-log.service';
 import { TaskLog } from '../entities/task-log.entity';
@@ -36,7 +41,7 @@ export class TasksService {
   }
 
   async createTask(taskData: any, req: AuthenticatedRequest): Promise<TaskLog> {
-    const user = req.user as User; // `req.user` is now properly typed
+    const user = req.user as User;
 
     if (!user) {
       throw new ForbiddenException('User not authenticated.');
@@ -44,10 +49,19 @@ export class TasksService {
 
     await this.checkIfOwner(user.id, taskData.project_id);
 
-    // Update: Use `assigned_user_id` instead of `author_id`
     const createdTask = await this.pool.query(
-      `INSERT INTO tasks (id, title, status, project_id, assigned_user_id) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-      [uuidv4(), taskData.title, taskData.status, taskData.project_id, user.id], // `user.id` is set as `assigned_user_id`
+      `INSERT INTO tasks (id, title, description, status, priority, project_id, assigned_user_id, due_date) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+      [
+        uuidv4(), // task id
+        taskData.title, // task title
+        taskData.description, // task description
+        taskData.status, // task status
+        taskData.priority, // task priority
+        taskData.project_id, // project ID
+        taskData.assigned_user_id, // assigned user ID from request
+        taskData.due_date, // due date
+      ],
     );
 
     await this.taskLogService.createTaskLog({
@@ -77,7 +91,13 @@ export class TasksService {
     );
     const previousStatus = previousTask.rows[0]?.status;
 
-    await this.checkIfOwner(user.id, updateData.project_id);
+    // Validate the status value against allowed values
+    const allowedStatuses = ['pending', 'in_progress', 'completed'];
+    if (!allowedStatuses.includes(updateData.status)) {
+      throw new BadRequestException(
+        `Invalid status value: ${updateData.status}. Allowed values are: ${allowedStatuses.join(', ')}`,
+      );
+    }
 
     const updatedTask = await this.pool.query(
       `UPDATE tasks SET status = $1 WHERE id = $2 RETURNING *`,
@@ -95,29 +115,46 @@ export class TasksService {
   }
 
   async queryTasks(filters: any): Promise<any> {
-    let query = `SELECT * FROM tasks WHERE 1=1`;
+    let query = `
+      SELECT 
+        tasks.*, 
+        COALESCE(json_agg(comments) FILTER (WHERE comments.id IS NOT NULL), '[]') AS comments 
+      FROM tasks
+      LEFT JOIN comments ON tasks.id = comments.task_id
+      WHERE 1=1
+    `;
+
     const values = [];
 
     if (filters.project_id) {
-      query += ` AND project_id = $${values.length + 1}`;
+      query += ` AND tasks.project_id = $${values.length + 1}`;
       values.push(filters.project_id);
     }
     if (filters.assigned_user_id) {
-      query += ` AND assigned_user_id = $${values.length + 1}`;
+      query += ` AND tasks.assigned_user_id = $${values.length + 1}`;
       values.push(filters.assigned_user_id);
     }
     if (filters.status) {
-      query += ` AND status = $${values.length + 1}`;
+      query += ` AND tasks.status = $${values.length + 1}`;
       values.push(filters.status);
     }
     if (filters.priority) {
-      query += ` AND priority = $${values.length + 1}`;
+      query += ` AND tasks.priority = $${values.length + 1}`;
       values.push(filters.priority);
     }
     if (filters.due_in_days) {
-      query += ` AND due_date <= NOW() + interval '$${values.length + 1} days'`;
+      query += ` AND tasks.due_date <= NOW() + interval '$${values.length + 1} days'`;
       values.push(filters.due_in_days);
     }
+
+    // Add search by comment content if provided
+    if (filters.comment_search) {
+      query += ` AND comments.content ILIKE $${values.length + 1}`;
+      values.push(`%${filters.comment_search}%`);
+    }
+
+    // Group by task ID to avoid multiple rows per task
+    query += ` GROUP BY tasks.id`;
 
     const result = await this.pool.query(query, values);
     return result.rows;

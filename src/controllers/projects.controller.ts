@@ -43,7 +43,7 @@ export class ProjectsController {
 
   @Put(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @SetMetadata('roles', ['owner']) // Only owners can update projects
+  @SetMetadata('roles', ['owner'])
   async updateProject(
     @Param('id') id: string,
     @Body() updateData: any,
