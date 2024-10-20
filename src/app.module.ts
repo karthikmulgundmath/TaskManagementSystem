@@ -6,6 +6,7 @@ import { UsersModule } from './modules/users.module'; // New users module
 import { AuthModule } from './modules/auth.module'; // New auth module
 import { CommentsModule } from './modules/comments.module'; // Import CommentsModule
 import { TaskLogsModule } from './modules/task-logs.module'; // Import TaskLogsModule
+import { PubSubModule } from './modules/pubsub.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { TaskLogsModule } from './modules/task-logs.module'; // Import TaskLogsM
     AuthModule,
     CommentsModule,
     TaskLogsModule,
+    PubSubModule,
   ],
 })
 export class AppModule {}

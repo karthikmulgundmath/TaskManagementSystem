@@ -10,16 +10,12 @@ import { TaskLog } from '../entities/task-log.entity';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthenticatedRequest } from 'src/types/express-request.interface';
 import { User } from 'src/entities/user.entity';
+import { PubSub } from '@google-cloud/pubsub'; // Import Google Cloud PubSub
 
 @Injectable()
 export class TasksService {
-  /*************  ✨ Codeium Command ⭐  *************/
-  /**
-   * Constructor for TasksService class.
-   * @param pool PostgreSQL connection pool injected using PG_CONNECTION token
-   * @param taskLogService Instance of TaskLogService for logging tasks
-   */
-  /******  34d77b81-63ea-4359-ad11-066900a6a180  *******/ constructor(
+  private pubSubClient = new PubSub(); // Create a Pub/Sub client
+  constructor(
     @Inject('PG_CONNECTION') private pool: Pool,
     private taskLogService: TaskLogService,
   ) {}
@@ -40,11 +36,33 @@ export class TasksService {
     return true;
   }
 
+  // Function to publish a notification to the assigned user
+  private async publishTaskNotification(task: any): Promise<void> {
+    const topicName = `projects/${process.env.PROJECT_ID}/topics/${process.env.TOPIC_NAME}`; // Construct the topic name
+    console.log('topicName', topicName);
+    const message = JSON.stringify({
+      userId: task.assigned_user_id,
+      taskTitle: task.title,
+      dueDate: task.due_date,
+    });
+    console.log('message', message);
+
+    await this.pubSubClient
+      .topic(topicName)
+      .publish(Buffer.from(message))
+      .catch((error) => console.log('error in publishing message', error));
+  }
+
   async createTask(taskData: any, req: AuthenticatedRequest): Promise<TaskLog> {
     const user = req.user as User;
 
     if (!user) {
       throw new ForbiddenException('User not authenticated.');
+    }
+
+    // Check if the task has an assigned user
+    if (!taskData.assigned_user_id) {
+      throw new BadRequestException('Task must be assigned to a user.');
     }
 
     await this.checkIfOwner(user.id, taskData.project_id);
@@ -59,17 +77,21 @@ export class TasksService {
         taskData.status, // task status
         taskData.priority, // task priority
         taskData.project_id, // project ID
-        taskData.assigned_user_id, // assigned user ID from request
+        taskData.assigned_user_id, // assigned user ID
         taskData.due_date, // due date
       ],
     );
 
+    // Log task creation
     await this.taskLogService.createTaskLog({
       task_id: createdTask.rows[0].id,
       previous_status: 'N/A',
       new_status: taskData.status,
       changed_by: user.id,
     });
+
+    // Publish a notification to the assigned user
+    await this.publishTaskNotification(createdTask.rows[0]);
 
     return createdTask.rows[0];
   }
