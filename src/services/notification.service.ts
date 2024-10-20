@@ -46,14 +46,12 @@ export class NotificationService {
 
       // Send email using Nodemailer
       const transporter = nodemailer.createTransport({
-        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true, // Disable secure connection (SSL)
         auth: {
-          user: 'taskmanagementsystem.karthik@gmail.com', // Your email
-          pass: 'taskmanager8*', // App Password from Google
-        },
-        secure: false, // Disable secure connection (SSL)
-        tls: {
-          rejectUnauthorized: false, // Allow self-signed certificates (not recommended for production)
+          user: process.env.NODE_MAILER_EMAIL, // Your email
+          pass: process.env.NODE_MAILER_PASSWORD, // App Password from Google
         },
       });
       console.log('transporter', transporter);
