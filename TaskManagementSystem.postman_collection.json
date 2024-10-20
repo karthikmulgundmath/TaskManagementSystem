@@ -1,0 +1,472 @@
+{
+	"info": {
+		"_postman_id": "9feb3e61-91c6-4e16-8c8b-40feb85f7884",
+		"name": "TaskManagementSystem",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17607056"
+	},
+	"item": [
+		{
+			"name": "Projects",
+			"item": [
+				{
+					"name": "Add project",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImthcnRoaWtzcms0MEBnbWFpbC5jb20iLCJyb2xlIjoib3duZXIiLCJpYXQiOjE3MjkzMjY1NzYsImV4cCI6MTcyOTMzMDE3Nn0.k1xOLXZupZwdn9iJHpRbxMOU9M-O1LUy_ZOWdUNk6zc"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"New Project\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/projects",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"projects"
+							]
+						},
+						"description": "Generated from cURL: curl --location 'http://localhost:3000/projects' \\\r\n--header 'Content-Type: application/json' \\\r\n--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImthcnRoaWtzcms0MEBnbWFpbC5jb20iLCJyb2xlIjoib3duZXIiLCJpYXQiOjE3MjkzMjY1NzYsImV4cCI6MTcyOTMzMDE3Nn0.k1xOLXZupZwdn9iJHpRbxMOU9M-O1LUy_ZOWdUNk6zc' \\\r\n--data '{\r\n  \"name\": \"New Project\"\r\n}'\r\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Update project",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImthcnRoaWtzcms0MEBnbWFpbC5jb20iLCJyb2xlIjoib3duZXIiLCJpYXQiOjE3MjkzMjY1NzYsImV4cCI6MTcyOTMzMDE3Nn0.k1xOLXZupZwdn9iJHpRbxMOU9M-O1LUy_ZOWdUNk6zc"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"New Project\",\n    \"owner_id\": \"8a23c69b-b7d7-4d3b-aaa1-22cc75f8b7a9\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/projects/1d77b30e-c86e-488d-ae35-9198565d733c",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"projects",
+								"1d77b30e-c86e-488d-ae35-9198565d733c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete project",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImthcnRoaWtzcms0MEBnbWFpbC5jb20iLCJyb2xlIjoib3duZXIiLCJpYXQiOjE3MjkzMjY1NzYsImV4cCI6MTcyOTMzMDE3Nn0.k1xOLXZupZwdn9iJHpRbxMOU9M-O1LUy_ZOWdUNk6zc"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/projects/1d77b30e-c86e-488d-ae35-9198565d733c",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"projects",
+								"1d77b30e-c86e-488d-ae35-9198565d733c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all projects",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImthcnRoaWtzcms0MEBnbWFpbC5jb20iLCJyb2xlIjoib3duZXIiLCJpYXQiOjE3MjkzMjY1NzYsImV4cCI6MTcyOTMzMDE3Nn0.k1xOLXZupZwdn9iJHpRbxMOU9M-O1LUy_ZOWdUNk6zc"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/projects",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"projects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Project by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImthcnRoaWtzcms0MEBnbWFpbC5jb20iLCJyb2xlIjoib3duZXIiLCJpYXQiOjE3MjkzMjY1NzYsImV4cCI6MTcyOTMzMDE3Nn0.k1xOLXZupZwdn9iJHpRbxMOU9M-O1LUy_ZOWdUNk6zc"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/projects/1d77b30e-c86e-488d-ae35-9198565d733c",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"projects",
+								"1d77b30e-c86e-488d-ae35-9198565d733c"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tasks",
+			"item": [
+				{
+					"name": "Add Tasks",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"Implement API\",\r\n  \"description\": \"Develop the API for task management system.\",\r\n  \"status\": \"pending\",\r\n  \"priority\": \"high\",\r\n  \"project_id\": \"123e4567-e89b-12d3-a456-426614174000\",\r\n  \"assigned_user_id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"due_date\": \"2024-10-25T12:00:00Z\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/tasks",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"tasks"
+							]
+						},
+						"description": "Generated from cURL: curl -X POST http://localhost:3000/tasks \\\r\n-H \"Content-Type: application/json\" \\\r\n-d '{\r\n  \"title\": \"Implement API\",\r\n  \"description\": \"Develop the API for task management system.\",\r\n  \"status\": \"pending\",\r\n  \"priority\": \"high\",\r\n  \"project_id\": \"123e4567-e89b-12d3-a456-426614174000\",\r\n  \"assigned_user_id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n  \"due_date\": \"2024-10-25T12:00:00Z\"\r\n}'\r\n"
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpvaG5kb2VAZ21haWwuY29tIiwicm9sZSI6ImNvbnRyaWJ1dG9yIiwiaWF0IjoxNzI5NDEwMjU5LCJleHAiOjE3Mjk0MTM4NTl9.jX2kwtfecW3eDmMewNb6nPRltORLpJxa1yft8YR34-o"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"in_progress\",\n  \"project_id\": \"1d77b30e-c86e-488d-ae35-9198565d733c\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/tasks/93b7a7e9-fdf8-491d-9887-064a2e29fff5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"tasks",
+								"93b7a7e9-fdf8-491d-9887-064a2e29fff5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpvaG5kb2VAZ21haWwuY29tIiwicm9sZSI6ImNvbnRyaWJ1dG9yIiwiaWF0IjoxNzI5NDEwMjU5LCJleHAiOjE3Mjk0MTM4NTl9.jX2kwtfecW3eDmMewNb6nPRltORLpJxa1yft8YR34-o"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/tasks/query?project_id=1d77b30e-c86e-488d-ae35-9198565d733c&assigned_user_id=d2c01d57-33d4-47d3-9fe3-ae3aafce52fd&status=in_progress&priority=high",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"tasks",
+								"query"
+							],
+							"query": [
+								{
+									"key": "project_id",
+									"value": "1d77b30e-c86e-488d-ae35-9198565d733c"
+								},
+								{
+									"key": "assigned_user_id",
+									"value": "d2c01d57-33d4-47d3-9fe3-ae3aafce52fd"
+								},
+								{
+									"key": "status",
+									"value": "in_progress"
+								},
+								{
+									"key": "priority",
+									"value": "high"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Add Users",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"John Doe\",\r\n  \"email\": \"john.doe@example.com\",\r\n  \"password\": \"securepassword\",\r\n  \"role\": \"owner\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users"
+							]
+						},
+						"description": "Generated from cURL: curl -X POST http://localhost:3000/users \\\r\n-H \"Content-Type: application/json\" \\\r\n-d '{\r\n  \"name\": \"John Doe\",\r\n  \"email\": \"john.doe@example.com\",\r\n  \"password\": \"securepassword\",\r\n  \"role\": \"owner\"\r\n}'\r\n"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Comments",
+			"item": [
+				{
+					"name": "Post comments on tasks",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpvaG5kb2VAZ21haWwuY29tIiwicm9sZSI6ImNvbnRyaWJ1dG9yIiwiaWF0IjoxNzI5NDEyNDE2LCJleHAiOjE3Mjk0MTYwMTZ9.vRzYEZ9UvuS0Lv7qT_hg7E1BL0w7nDEVdMIAC7PD3ew"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"task_id\": \"93b7a7e9-fdf8-491d-9887-064a2e29fff5\",\n  \"author_id\": \"d2c01d57-33d4-47d3-9fe3-ae3aafce52fd\",\n  \"content\": \"I have started to work on this pubsub Notification\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/comments",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get comments by taskid",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "update a comment",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpvaG5kb2VAZ21haWwuY29tIiwicm9sZSI6ImNvbnRyaWJ1dG9yIiwiaWF0IjoxNzI5NDEyNDE2LCJleHAiOjE3Mjk0MTYwMTZ9.vRzYEZ9UvuS0Lv7qT_hg7E1BL0w7nDEVdMIAC7PD3ew"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"content\": \"Updated content of the comment.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/comments/7c9abe75-4ae4-494c-bc27-6712257c80e2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"comments",
+								"7c9abe75-4ae4-494c-bc27-6712257c80e2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete comments",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpvaG5kb2VAZ21haWwuY29tIiwicm9sZSI6ImNvbnRyaWJ1dG9yIiwiaWF0IjoxNzI5NDEyNDE2LCJleHAiOjE3Mjk0MTYwMTZ9.vRzYEZ9UvuS0Lv7qT_hg7E1BL0w7nDEVdMIAC7PD3ew"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/comments/7c9abe75-4ae4-494c-bc27-6712257c80e2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"comments",
+								"7c9abe75-4ae4-494c-bc27-6712257c80e2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"john.doe@example.com\",\r\n  \"password\": \"securepassword\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"auth",
+						"login"
+					]
+				},
+				"description": "Generated from cURL: curl -X POST http://localhost:3000/auth/login \\\r\n-H \"Content-Type: application/json\" \\\r\n-d '{\r\n  \"email\": \"john.doe@example.com\",\r\n  \"password\": \"securepassword\"\r\n}'\r\n"
+			},
+			"response": []
+		}
+	]
+}

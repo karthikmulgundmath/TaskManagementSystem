@@ -42,6 +42,7 @@ export class TasksService {
     console.log('topicName', topicName);
     const message = JSON.stringify({
       userId: task.assigned_user_id,
+      taskId: task.id,
       taskTitle: task.title,
       dueDate: task.due_date,
       projectId: task.project_id,
