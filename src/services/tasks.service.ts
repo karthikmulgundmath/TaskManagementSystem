@@ -1,48 +1,94 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, ForbiddenException } from '@nestjs/common';
 import { Pool } from 'pg';
-import { TaskLogService } from './task-log.service'; // Import TaskLogService
-import { TaskLog } from '../entities/task-log.entity'; // Assuming you have a Task entity
-import { v4 as uuidv4 } from 'uuid'; // For generating unique IDs
+import { TaskLogService } from './task-log.service';
+import { TaskLog } from '../entities/task-log.entity';
+import { v4 as uuidv4 } from 'uuid';
+import { AuthenticatedRequest } from 'src/types/express-request.interface';
+import { User } from 'src/entities/user.entity';
 
 @Injectable()
 export class TasksService {
-  constructor(
+  /*************  ✨ Codeium Command ⭐  *************/
+  /**
+   * Constructor for TasksService class.
+   * @param pool PostgreSQL connection pool injected using PG_CONNECTION token
+   * @param taskLogService Instance of TaskLogService for logging tasks
+   */
+  /******  34d77b81-63ea-4359-ad11-066900a6a180  *******/ constructor(
     @Inject('PG_CONNECTION') private pool: Pool,
-    private taskLogService: TaskLogService, // Inject TaskLogService
+    private taskLogService: TaskLogService,
   ) {}
 
-  async createTask(taskData: any): Promise<TaskLog> {
-    // Your existing logic to create a task
-    const createdTask = await this.pool.query(/* your insert logic here */);
+  private async checkIfOwner(
+    userId: string,
+    projectId: string,
+  ): Promise<boolean> {
+    const query = `SELECT owner_id FROM projects WHERE id = $1`;
+    const result = await this.pool.query(query, [projectId]);
+    const project = result.rows[0];
 
-    // Log the task creation
+    if (!project || project.owner_id !== userId) {
+      throw new ForbiddenException(
+        'Only project owners can perform this action.',
+      );
+    }
+    return true;
+  }
+
+  async createTask(taskData: any, req: AuthenticatedRequest): Promise<TaskLog> {
+    const user = req.user as User; // `req.user` is now properly typed
+
+    if (!user) {
+      throw new ForbiddenException('User not authenticated.');
+    }
+
+    await this.checkIfOwner(user.id, taskData.project_id);
+
+    // Update: Use `assigned_user_id` instead of `author_id`
+    const createdTask = await this.pool.query(
+      `INSERT INTO tasks (id, title, status, project_id, assigned_user_id) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+      [uuidv4(), taskData.title, taskData.status, taskData.project_id, user.id], // `user.id` is set as `assigned_user_id`
+    );
+
     await this.taskLogService.createTaskLog({
-      task_id: createdTask.id, // Use the ID of the created task
-      previous_status: 'N/A', // No previous status when creating
-      new_status: taskData.status, // Use the status from taskData
-      changed_by: taskData.author_id, // Assuming you pass the author ID
+      task_id: createdTask.rows[0].id,
+      previous_status: 'N/A',
+      new_status: taskData.status,
+      changed_by: user.id,
     });
 
     return createdTask.rows[0];
   }
 
-  async updateTask(id: string, updateData: any): Promise<TaskLog> {
-    // Fetch the previous status before updating
+  async updateTask(
+    id: string,
+    updateData: any,
+    req: AuthenticatedRequest,
+  ): Promise<TaskLog> {
+    const user = req.user;
+
+    if (!user) {
+      throw new ForbiddenException('User not authenticated.');
+    }
+
     const previousTask = await this.pool.query(
       `SELECT status FROM tasks WHERE id = $1`,
       [id],
     );
     const previousStatus = previousTask.rows[0]?.status;
 
-    // Your existing logic to update a task
-    const updatedTask = await this.pool.query(/* your update logic here */);
+    await this.checkIfOwner(user.id, updateData.project_id);
 
-    // Log the task update
+    const updatedTask = await this.pool.query(
+      `UPDATE tasks SET status = $1 WHERE id = $2 RETURNING *`,
+      [updateData.status, id],
+    );
+
     await this.taskLogService.createTaskLog({
       task_id: id,
       previous_status: previousStatus,
-      new_status: updateData.status, // New status from the updateData
-      changed_by: updateData.author_id, // Assuming you pass the author ID
+      new_status: updateData.status,
+      changed_by: user.id,
     });
 
     return updatedTask.rows[0];
