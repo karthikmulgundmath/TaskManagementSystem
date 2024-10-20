@@ -1,5 +1,7 @@
 # Task Management System
 
+Author : Karthik S Mulagundmath
+
 ## Table of Contents
 
 - [Task Management System](#task-management-system)

@@ -1,8 +1,8 @@
 {
   "name": "task-management",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "It is a tool for managing Tasks",
+  "author": "Karthik S Mulagundmath",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
