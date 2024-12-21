@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get } from '@nestjs/common';
 import { UsersService } from '../services/users.service';
 
 @Controller('users')
@@ -21,5 +21,10 @@ export class UsersController {
       userData.password,
       userData.role,
     );
+  }
+
+  @Get()
+  async getAllUsers() {
+    return await this.usersService.getAllUsers();
   }
 }
