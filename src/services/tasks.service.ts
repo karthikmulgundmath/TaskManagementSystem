@@ -100,7 +100,15 @@ export class TasksService {
 
   async updateTask(
     id: string,
-    updateData: any,
+    updateData: Partial<{
+      title: string;
+      description: string;
+      status: string;
+      priority: string;
+      due_date: string;
+      project_id: string;
+      assigned_user_id: string;
+    }>,
     req: AuthenticatedRequest,
   ): Promise<TaskLog> {
     const user = req.user;
@@ -109,29 +117,40 @@ export class TasksService {
       throw new ForbiddenException('User not authenticated.');
     }
 
-    const previousTask = await this.pool.query(
-      `SELECT status FROM tasks WHERE id = $1`,
-      [id],
-    );
-    const previousStatus = previousTask.rows[0]?.status;
-
-    // Validate the status value against allowed values
+    // Validate the status value if provided
     const allowedStatuses = ['pending', 'in_progress', 'completed'];
-    if (!allowedStatuses.includes(updateData.status)) {
+    if (updateData.status && !allowedStatuses.includes(updateData.status)) {
       throw new BadRequestException(
         `Invalid status value: ${updateData.status}. Allowed values are: ${allowedStatuses.join(', ')}`,
       );
     }
 
-    const updatedTask = await this.pool.query(
-      `UPDATE tasks SET status = $1 WHERE id = $2 RETURNING *`,
-      [updateData.status, id],
+    // Fetch the previous task for logging purposes
+    const previousTask = await this.pool.query(
+      `SELECT * FROM tasks WHERE id = $1`,
+      [id],
     );
+    if (!previousTask.rows.length) {
+      throw new BadRequestException('Task not found.');
+    }
+    const previousData = previousTask.rows[0];
 
+    // Construct dynamic SQL for updating
+    const updateFields = Object.keys(updateData)
+      .map((key, index) => `${key} = $${index + 2}`)
+      .join(', ');
+
+    const values = [id, ...Object.values(updateData)];
+
+    // Update task in the database
+    const query = `UPDATE tasks SET ${updateFields} WHERE id = $1 RETURNING *`;
+    const updatedTask = await this.pool.query(query, values);
+
+    // Log the changes
     await this.taskLogService.createTaskLog({
       task_id: id,
-      previous_status: previousStatus,
-      new_status: updateData.status,
+      previous_status: previousData.status,
+      new_status: updateData.status || previousData.status,
       changed_by: user.id,
     });
 
