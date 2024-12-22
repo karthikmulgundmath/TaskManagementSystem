@@ -202,4 +202,10 @@ export class TasksService {
     const result = await this.pool.query(query, values);
     return result.rows;
   }
+
+  async deleteTask(id: string): Promise<any> {
+    const query = `DELETE FROM tasks WHERE id = $1 RETURNING *`;
+    const result = await this.pool.query(query, [id]);
+    return result.rows[0];
+  }
 }

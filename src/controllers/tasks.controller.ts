@@ -8,6 +8,7 @@ import {
   Query,
   Req,
   UseGuards,
+  Delete,
 } from '@nestjs/common';
 import { TasksService } from '../services/tasks.service';
 import { Request } from 'express';
@@ -41,5 +42,10 @@ export class TasksController {
   @Get('query')
   async queryTasks(@Query() filters: any) {
     return await this.tasksService.queryTasks(filters);
+  }
+
+  @Delete(':id')
+  async deleteTask(@Param('id') id: string) {
+    return await this.tasksService.deleteTask(id);
   }
 }
